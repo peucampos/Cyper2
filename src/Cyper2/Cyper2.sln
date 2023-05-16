@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cyper2", "Cyper2.csproj", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cyper2.Tests", "..\..\test\Cyper2.Tests\Cyper2.Tests.csproj", "{F981BE68-B0CC-4EAC-B3CD-4D8D43178231}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CyperClient", "..\CyperClient\CyperClient.csproj", "{D4370293-7560-4595-ACB1-5DDBB89465EF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{F981BE68-B0CC-4EAC-B3CD-4D8D43178231}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F981BE68-B0CC-4EAC-B3CD-4D8D43178231}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F981BE68-B0CC-4EAC-B3CD-4D8D43178231}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D4370293-7560-4595-ACB1-5DDBB89465EF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D4370293-7560-4595-ACB1-5DDBB89465EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D4370293-7560-4595-ACB1-5DDBB89465EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D4370293-7560-4595-ACB1-5DDBB89465EF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,0 +1,53 @@
+﻿@page "/"
+@inject HttpClient httpClient
+
+<h3>Cyper</h3>
+
+<div class="form-group">
+    <label for="drug1">Drug 1:</label>
+    <input type="text" class="form-control" @bind="@Drug1" id="drug1">
+</div>
+
+<div class="form-group">
+    <label for="drug2">Drug 2:</label>
+    <input type="text" class="form-control" @bind="@Drug2" id="drug2">
+</div>
+
+<button class="btn btn-primary" @onclick="CompareDrugs">Comparar</button>
+
+@if (ComparisonResult != null)
+{
+    <div class="result">
+        <h4>Result:</h4>
+        <ul>
+            @foreach (var item in ComparisonResult)
+            {
+                <li>@item</li>
+            }
+        </ul>
+    </div>
+}
+
+@code {
+    private string Drug1 { get; set; }
+    private string Drug2 { get; set; }
+    private List<string> ComparisonResult { get; set; }
+
+    private async Task CompareDrugs()
+    {
+        var endpointUrl = "https://y9fufwvlbd.execute-api.sa-east-1.amazonaws.com/v1"; // Replace with your API Gateway URL
+
+        var response = await httpClient.GetAsync($"{endpointUrl}?d1={Drug1}&d2={Drug2}");
+
+
+        if (response.IsSuccessStatusCode)
+        {
+            ComparisonResult = await response.Content.ReadFromJsonAsync<List<string>>();
+        }
+        else
+        {
+            // Handle error response
+            ComparisonResult = null;
+        }
+    }
+}

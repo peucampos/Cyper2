@@ -19,7 +19,7 @@ namespace Cyper2
             _amazonDynamoDB = dynamoDB;
         }
 
-        public async Task<Drug[]> GetDrugsAsync()
+        public async Task<List<Drug>> GetDrugsAsync()
         {
             var result = await _amazonDynamoDB.ScanAsync(new ScanRequest
             {
@@ -28,24 +28,29 @@ namespace Cyper2
 
             if (result != null && result.Items != null)
             {
-                var drugs = new List<Drug>();
-
-                foreach (var item in result.Items)
-                {
-                    item.TryGetValue("drugName", out var name);
-                    item.TryGetValue("cyps", out var cyps);
-
-                    drugs.Add(new Drug
-                    {
-                        DrugName = name?.S,
-                        Cyps = cyps?.SS
-                    });
-                }
-
-                return drugs.ToArray();
+                return ResultToDrugs(result);
             }
 
-            return Array.Empty<Drug>();
+            return new List<Drug>();
+        }
+
+        private List<Drug> ResultToDrugs(ScanResponse result)
+        {
+            var drugs = new List<Drug>();
+
+            foreach (var item in result.Items)
+            {
+                item.TryGetValue("drugName", out var name);
+                item.TryGetValue("cyps", out var cyps);
+
+                drugs.Add(new Drug
+                {
+                    DrugName = name?.S,
+                    Cyps = cyps?.SS
+                });
+            }
+
+            return drugs;
         }
 
         public async Task<List<string>> DrugsInteractAsync(string drug1, string drug2)
@@ -57,7 +62,7 @@ namespace Cyper2
             return commonCYPs;
         }
 
-        private async Task<List<string>> GetCypsForDrug(string drugName)
+        public async Task<List<string>> GetCypsForDrug(string drugName)
         {
             var table = Table.LoadTable(_amazonDynamoDB, TABLE_NAME);
             var document = await table.GetItemAsync(drugName);
