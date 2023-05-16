@@ -19,26 +19,27 @@ public class CyperFunction
     /// <returns></returns>
     public async Task<APIGatewayProxyResponse> CyperFunctionHandler(APIGatewayProxyRequest request, ILambdaContext context)
     {
-        string name = "none";
+        string d1 = "";
+        string d2 = "";
 
-        if (request.QueryStringParameters != null && request.QueryStringParameters.ContainsKey("name"))
+        if (request.QueryStringParameters != null && request.QueryStringParameters.ContainsKey("d1") && request.QueryStringParameters.ContainsKey("d2"))
         {
-            name = request.QueryStringParameters["name"];
+            d1 = request.QueryStringParameters["d1"];
+            d2 = request.QueryStringParameters["d2"];
+
+            var drugProvider = new DrugProvider(new AmazonDynamoDBClient());
+            var drugs = await drugProvider.DrugsInteractAsync(d1, d2);
+
+            return new APIGatewayProxyResponse
+            {
+                StatusCode = 200,
+                Body = JsonConvert.SerializeObject(drugs)
+            };
         }
 
-        if (request.HttpMethod == "POST")
-        {
-            // POST Method
-        }
-
-        var drugProvider = new DrugProvider(new AmazonDynamoDBClient());
-        var drugs = await drugProvider.GetDrugsAsync();
-
-        context.Logger.Log($"Got name {name}");
         return new APIGatewayProxyResponse
         {
-            StatusCode = 200,
-            Body = JsonConvert.SerializeObject(drugs)
+            StatusCode = 404
         };
     }
 }

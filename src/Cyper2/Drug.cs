@@ -9,7 +9,7 @@ namespace Cyper2
 {
     public class Drug
     {
-        public string Name { get; set; }
+        public string DrugName { get; set; }
         public List<string> Cyps { get; set; }
     }
 }

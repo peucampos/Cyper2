@@ -1,4 +1,5 @@
 ﻿using Amazon.DynamoDBv2;
+using Amazon.DynamoDBv2.DocumentModel;
 using Amazon.DynamoDBv2.Model;
 using System;
 using System.Collections.Generic;
@@ -10,6 +11,7 @@ namespace Cyper2
 {
     public class DrugProvider : IDrugProvider
     {
+        private const string TABLE_NAME = "drugs";
         private readonly IAmazonDynamoDB _amazonDynamoDB;
 
         public DrugProvider(IAmazonDynamoDB dynamoDB)
@@ -21,7 +23,7 @@ namespace Cyper2
         {
             var result = await _amazonDynamoDB.ScanAsync(new ScanRequest
             {
-                TableName = "drugs"
+                TableName = TABLE_NAME
             });
 
             if (result != null && result.Items != null)
@@ -30,12 +32,12 @@ namespace Cyper2
 
                 foreach (var item in result.Items)
                 {
-                    item.TryGetValue("name", out var name);
+                    item.TryGetValue("drugName", out var name);
                     item.TryGetValue("cyps", out var cyps);
 
                     drugs.Add(new Drug
                     {
-                        Name = name?.S,
+                        DrugName = name?.S,
                         Cyps = cyps?.SS
                     });
                 }
@@ -45,5 +47,28 @@ namespace Cyper2
 
             return Array.Empty<Drug>();
         }
+
+        public async Task<List<string>> DrugsInteractAsync(string drug1, string drug2)
+        {
+            var cypsDrug1 = await GetCypsForDrug(drug1);
+            var cypsDrug2 = await GetCypsForDrug(drug2);
+
+            var commonCYPs = cypsDrug1.Intersect(cypsDrug2).ToList();
+            return commonCYPs;
+        }
+
+        private async Task<List<string>> GetCypsForDrug(string drugName)
+        {
+            var table = Table.LoadTable(_amazonDynamoDB, TABLE_NAME);
+            var document = await table.GetItemAsync(drugName);
+
+            if (document != null)
+            {
+                return document["cyps"].AsListOfString();
+            }
+
+            return new List<string>();
+        }
+
     }
 }
