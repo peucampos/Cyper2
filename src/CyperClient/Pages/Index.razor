@@ -13,11 +13,11 @@
     <input type="text" class="form-control" @bind="@Drug2" id="drug2">
 </div>
 
-<button class="btn btn-primary" @onclick="CompareDrugs">Comparar</button>
+<button class="btn btn-primary mt-2" @onclick="CompareDrugs">Comparar</button>
 
 @if (ComparisonResult != null)
 {
-    <div class="result">
+    <div class="result mt-2">
         <h4>Result:</h4>
         <ul>
             @foreach (var item in ComparisonResult)
